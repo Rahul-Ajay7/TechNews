@@ -7,6 +7,7 @@ import { hostname, timeAgo } from "@/lib/format";
 const SOURCE_STYLES: Record<Story["source"], string> = {
   hackernews: "bg-orange-500/15 text-orange-400",
   devto: "bg-violet-500/15 text-violet-400",
+  reddit: "bg-red-500/15 text-red-400",
 };
 
 export default function StoryCard({
@@ -74,14 +75,18 @@ export default function StoryCard({
         </button>
       </div>
       <div className="mt-3 flex items-center gap-4 text-xs text-zinc-500">
-        <span className="font-medium text-zinc-400">▲ {story.score}</span>
+        {story.score > 0 && (
+          <span className="font-medium text-zinc-400">▲ {story.score}</span>
+        )}
         <a
           href={story.commentsUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="hover:text-zinc-300"
         >
-          {story.comments} comments
+          {story.comments > 0
+            ? `${story.comments} comment${story.comments === 1 ? "" : "s"}`
+            : "discussion"}
         </a>
         <span>by {story.author}</span>
       </div>

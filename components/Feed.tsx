@@ -12,6 +12,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "all", label: "All" },
   { id: "hackernews", label: "Hacker News" },
   { id: "devto", label: "DEV" },
+  { id: "reddit", label: "Reddit" },
   { id: "saved", label: "Saved" },
 ];
 
@@ -41,7 +42,7 @@ export default function Feed({ initialStories }: { initialStories: Story[] }) {
 
   const visible = useMemo(() => {
     let list = tab === "saved" ? bookmarks : stories;
-    if (tab === "hackernews" || tab === "devto") {
+    if (tab === "hackernews" || tab === "devto" || tab === "reddit") {
       list = list.filter((s) => s.source === tab);
     }
     const q = query.trim().toLowerCase();

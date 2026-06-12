@@ -1,12 +1,13 @@
 # TechNews
 
 Developer news in one fast feed. Aggregates top stories from the public
-[Hacker News (Algolia)](https://hn.algolia.com/api) and [DEV](https://developers.forem.com/api)
+[Hacker News (Algolia)](https://hn.algolia.com/api), [DEV](https://developers.forem.com/api),
+and [Reddit](https://www.reddit.com/dev/api/) (r/technology, r/programming, r/webdev)
 APIs — no API keys required.
 
 ## Features
 
-- Unified feed from Hacker News and DEV, cached server-side and refreshed every 5 minutes
+- Unified feed from Hacker News, DEV, and Reddit, cached server-side and refreshed every 5 minutes
 - Filter by source, sort by **Latest** or **Top**, full-text search across titles and tags
 - Save stories for later (stored in localStorage — no account needed)
 - Dark theme, responsive layout

@@ -75,8 +75,78 @@ async function fetchDevTo(): Promise<Story[]> {
   }));
 }
 
+function decodeXmlEntities(text: string): string {
+  return text
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&amp;/g, "&");
+}
+
+// Reddit blocks unauthenticated .json requests from many networks (403),
+// but serves the same listings as Atom feeds. Parse the RSS instead.
+// Atom entries carry no score or comment count, so those stay 0.
+async function fetchReddit(): Promise<Story[]> {
+  const res = await fetch(
+    "https://www.reddit.com/r/technology+programming+webdev/.rss?limit=30",
+    {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) TechNews-aggregator/1.0",
+      },
+      next: { revalidate: REVALIDATE_SECONDS },
+    }
+  );
+  if (!res.ok) throw new Error(`Reddit RSS responded ${res.status}`);
+  const xml = await res.text();
+
+  return xml
+    .split("<entry>")
+    .slice(1)
+    .flatMap((entry) => {
+      const field = (tag: string) =>
+        entry.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`))?.[1] ??
+        "";
+      const permalink = entry.match(/<link href="([^"]+)"/)?.[1];
+      const title = decodeXmlEntities(field("title"));
+      if (!permalink || !title) return [];
+
+      // Link posts embed the external URL in the content HTML as
+      // <a href="...">[link]</a>; self posts have no such anchor. The content
+      // is HTML-escaped inside the XML, so the URL needs two decode passes.
+      const external = entry.match(
+        /href=&quot;((?:(?!&quot;).)*)&quot;&gt;\[link\]/
+      )?.[1];
+      const subreddit = entry
+        .match(/<category term="([^"]+)"/)?.[1]
+        ?.toLowerCase();
+
+      return [
+        {
+          id: `reddit-${field("id").replace(/^t3_/, "")}`,
+          title,
+          url: external
+            ? decodeXmlEntities(decodeXmlEntities(external))
+            : permalink,
+          commentsUrl: permalink,
+          source: "reddit" as const,
+          score: 0,
+          comments: 0,
+          author: field("name").replace(/^\/u\//, ""),
+          publishedAt: field("published") || field("updated"),
+          tags: subreddit ? [subreddit] : [],
+        },
+      ];
+    });
+}
+
 export async function fetchAllStories(): Promise<Story[]> {
-  const results = await Promise.allSettled([fetchHackerNews(), fetchDevTo()]);
+  const results = await Promise.allSettled([
+    fetchHackerNews(),
+    fetchDevTo(),
+    fetchReddit(),
+  ]);
   const stories = results
     .filter(
       (result): result is PromiseFulfilledResult<Story[]> =>

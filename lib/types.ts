@@ -1,4 +1,4 @@
-export type Source = "hackernews" | "devto";
+export type Source = "hackernews" | "devto" | "reddit";
 
 export interface Story {
   id: string;
@@ -16,4 +16,5 @@ export interface Story {
 export const SOURCE_LABELS: Record<Source, string> = {
   hackernews: "Hacker News",
   devto: "DEV",
+  reddit: "Reddit",
 };
