@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "TechNews — developer news in one feed";
+export const alt = "Cometry — developer news in one feed";
 
 export default function OpengraphImage() {
   return new ImageResponse(
@@ -28,8 +28,8 @@ export default function OpengraphImage() {
             letterSpacing: -2,
           }}
         >
-          <span>Tech</span>
-          <span style={{ color: "#22d3ee" }}>News</span>
+          <span>Comet</span>
+          <span style={{ color: "#22d3ee" }}>ry</span>
         </div>
         <div style={{ fontSize: 40, color: "#a1a1aa", marginTop: 24 }}>
           Developer news in one fast feed

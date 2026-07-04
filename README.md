@@ -1,4 +1,4 @@
-# TechNews
+# Cometry
 
 Developer news in one fast feed. Aggregates top stories from Hacker News and DEV
 into a single dark, searchable feed — **no API keys, no accounts, no cost.**
