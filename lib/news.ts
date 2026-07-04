@@ -46,6 +46,7 @@ interface DevToArticle {
   positive_reactions_count: number;
   comments_count: number;
   published_at: string;
+  description: string;
   user: { username: string };
   // The list endpoint returns tag_list as an array and tags as a string;
   // single-article responses swap them.
@@ -72,6 +73,7 @@ async function fetchDevTo(): Promise<Story[]> {
     tags: Array.isArray(article.tag_list)
       ? article.tag_list
       : article.tag_list.split(",").map((t) => t.trim()).filter(Boolean),
+    excerpt: article.description?.trim() || undefined,
   }));
 }
 

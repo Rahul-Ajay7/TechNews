@@ -30,7 +30,7 @@ export default function RootLayout({
     >
       <body className="flex min-h-full flex-col bg-zinc-950 font-sans text-zinc-100">
         <header className="sticky top-0 z-10 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-3xl items-center justify-between px-4 py-3.5">
+          <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3.5">
             <a href="/" className="text-lg font-bold tracking-tight">
               Tech<span className="text-cyan-400">News</span>
             </a>

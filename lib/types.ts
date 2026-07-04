@@ -11,6 +11,8 @@ export interface Story {
   author: string;
   publishedAt: string;
   tags: string[];
+  // Short snippet from the source API (DEV only); one-line teaser under title.
+  excerpt?: string;
 }
 
 export const SOURCE_LABELS: Record<Source, string> = {

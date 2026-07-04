@@ -43,6 +43,11 @@ export default function StoryCard({
           >
             {story.title}
           </a>
+          {story.excerpt && (
+            <p className="mt-1 line-clamp-2 text-sm leading-snug text-zinc-400">
+              {story.excerpt}
+            </p>
+          )}
           {story.tags.length > 0 && (
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {story.tags.slice(0, 4).map((tag) => (
