@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -43,6 +44,7 @@ export default function RootLayout({
         <footer className="border-t border-zinc-800/80 py-4 text-center text-xs text-zinc-600">
           Stories from public Hacker News and DEV APIs
         </footer>
+        <Analytics />
       </body>
     </html>
   );
