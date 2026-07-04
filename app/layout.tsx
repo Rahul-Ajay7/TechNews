@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const SITE_URL = "https://soft-tech-news.vercel.app";
+const SITE_URL = "https://cometry.vercel.app";
 const TITLE = "Cometry — developer news in one feed";
 const DESCRIPTION =
   "Hacker News + DEV in one fast, dark feed. Search, filter, and save stories. No ads, no login.";
