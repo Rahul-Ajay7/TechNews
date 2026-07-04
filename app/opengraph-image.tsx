@@ -34,8 +34,23 @@ export default function OpengraphImage() {
         <div style={{ fontSize: 40, color: "#a1a1aa", marginTop: 24 }}>
           Developer news in one fast feed
         </div>
-        <div style={{ fontSize: 28, color: "#71717a", marginTop: 48 }}>
+        <div style={{ fontSize: 28, color: "#71717a", marginTop: 40 }}>
           Hacker News + DEV · search · save · no ads · no login
+        </div>
+        <div
+          style={{
+            display: "flex",
+            marginTop: 56,
+            padding: "18px 40px",
+            fontSize: 32,
+            fontWeight: 700,
+            color: "#09090b",
+            background: "#22d3ee",
+            borderRadius: 14,
+            alignSelf: "flex-start",
+          }}
+        >
+          Read the feed →
         </div>
       </div>
     ),

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 const SITE_URL = "https://soft-tech-news.vercel.app";
 const TITLE = "TechNews — developer news in one feed";
 const DESCRIPTION =
-  "Top stories from Hacker News and DEV in one fast, dark feed. Search, filter by source, and save stories for later. No ads, no login.";
+  "Hacker News + DEV in one fast, dark feed. Search, filter, and save stories. No ads, no login.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
