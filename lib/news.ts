@@ -86,12 +86,98 @@ function decodeXmlEntities(text: string): string {
     .replace(/&amp;/g, "&");
 }
 
-// Reddit blocks unauthenticated .json requests from many networks (403),
-// but serves the same listings as Atom feeds. Parse the RSS instead.
-// Atom entries carry no score or comment count, so those stay 0.
-async function fetchReddit(): Promise<Story[]> {
+const REDDIT_SUBS = "technology+programming+webdev";
+const REDDIT_UA =
+  "web:technews-aggregator:1.0 (by /u/technews-app)";
+
+// --- Reddit via official OAuth (works from cloud/datacenter IPs) ---------
+// Reddit blocks unauthenticated requests from datacenter IPs (Vercel) with 403.
+// With a free "script" app (client id + secret) we get an app-only OAuth token
+// and hit oauth.reddit.com, which is allowed and also returns score/comments.
+
+interface RedditListing {
+  data: {
+    children: {
+      data: {
+        id: string;
+        title: string;
+        url: string;
+        permalink: string;
+        score: number;
+        num_comments: number;
+        author: string;
+        created_utc: number;
+        subreddit: string;
+        stickied: boolean;
+        is_self: boolean;
+      };
+    }[];
+  };
+}
+
+async function getRedditToken(
+  id: string,
+  secret: string
+): Promise<string> {
+  const res = await fetch("https://www.reddit.com/api/v1/access_token", {
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${Buffer.from(`${id}:${secret}`).toString("base64")}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+      "User-Agent": REDDIT_UA,
+    },
+    body: "grant_type=client_credentials",
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Reddit token responded ${res.status}`);
+  const data: { access_token?: string } = await res.json();
+  if (!data.access_token) throw new Error("Reddit token missing in response");
+  return data.access_token;
+}
+
+async function fetchRedditOAuth(
+  id: string,
+  secret: string
+): Promise<Story[]> {
+  const token = await getRedditToken(id, secret);
   const res = await fetch(
-    "https://www.reddit.com/r/technology+programming+webdev/.rss?limit=30",
+    `https://oauth.reddit.com/r/${REDDIT_SUBS}/hot?limit=30&raw_json=1`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "User-Agent": REDDIT_UA,
+      },
+      next: { revalidate: REVALIDATE_SECONDS },
+    }
+  );
+  if (!res.ok) throw new Error(`Reddit API responded ${res.status}`);
+  const listing: RedditListing = await res.json();
+
+  return listing.data.children
+    .filter(({ data }) => !data.stickied)
+    .map(({ data }) => {
+      const permalink = `https://www.reddit.com${data.permalink}`;
+      return {
+        id: `reddit-${data.id}`,
+        title: data.title,
+        url: data.is_self ? permalink : data.url,
+        commentsUrl: permalink,
+        source: "reddit" as const,
+        score: data.score,
+        comments: data.num_comments,
+        author: data.author,
+        publishedAt: new Date(data.created_utc * 1000).toISOString(),
+        tags: [data.subreddit.toLowerCase()],
+      };
+    });
+}
+
+// --- Reddit via public Atom RSS (fallback, works from residential IPs) ----
+// Used when no OAuth credentials are set (e.g. local dev). RSS carries no
+// score or comment count, so those stay 0.
+async function fetchRedditRSS(): Promise<Story[]> {
+  const res = await fetch(
+    `https://www.reddit.com/r/${REDDIT_SUBS}/.rss?limit=30`,
     {
       headers: {
         "User-Agent":
@@ -141,6 +227,20 @@ async function fetchReddit(): Promise<Story[]> {
         },
       ];
     });
+}
+
+async function fetchReddit(): Promise<Story[]> {
+  const id = process.env.REDDIT_CLIENT_ID;
+  const secret = process.env.REDDIT_CLIENT_SECRET;
+  if (id && secret) {
+    try {
+      return await fetchRedditOAuth(id, secret);
+    } catch {
+      // Creds bad or Reddit hiccup — fall back to public RSS.
+      return fetchRedditRSS();
+    }
+  }
+  return fetchRedditRSS();
 }
 
 export async function fetchAllStories(): Promise<Story[]> {

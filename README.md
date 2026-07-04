@@ -21,7 +21,7 @@ cost.**
 |--------|----------|------|-------|
 | Hacker News | [Algolia Search API](https://hn.algolia.com/api) `front_page` | No | Score + comment counts |
 | DEV | [Forem API](https://developers.forem.com/api) `articles?top=2` | No | Score + comments + tags |
-| Reddit | Atom RSS of `r/technology+programming+webdev` | No | RSS gives no score/comments (Reddit blocks unauthenticated JSON); cards show "discussion" |
+| Reddit | OAuth JSON `r/technology+programming+webdev/hot` | Optional | Free "script" app; works from cloud hosts + gives score/comments. Falls back to public RSS (no counts) when unset |
 
 All free, all public. Adding a paid or key-gated source is a deliberate choice — not a default.
 
@@ -38,6 +38,17 @@ All free, all public. Adding a paid or key-gated source is a deliberate choice �
 npm install
 npm run dev      # dev server at http://localhost:3000
 ```
+
+### Reddit on cloud hosts (optional)
+
+Reddit blocks unauthenticated requests from datacenter IPs (e.g. Vercel), so on
+a deployed host the Reddit source needs a free OAuth app. Locally it works
+without one (via RSS). To enable it everywhere:
+
+1. Create a **script** app at [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps).
+2. Copy `.env.example` to `.env.local` and fill in `REDDIT_CLIENT_ID` and
+   `REDDIT_CLIENT_SECRET`.
+3. On Vercel, add the same two variables under **Settings → Environment Variables**.
 
 Other scripts:
 
