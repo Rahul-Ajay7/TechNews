@@ -1,13 +1,12 @@
 # TechNews
 
-Developer news in one fast feed. Aggregates top stories from Hacker News, DEV,
-and Reddit into a single dark, searchable feed — **no API keys, no accounts, no
-cost.**
+Developer news in one fast feed. Aggregates top stories from Hacker News and DEV
+into a single dark, searchable feed — **no API keys, no accounts, no cost.**
 
 ## Features
 
-- **Three sources, one feed** — merged and de-duplicated, newest first
-- **Filter by source** — All / Hacker News / DEV / Reddit tabs
+- **Two sources, one feed** — merged and de-duplicated, newest first
+- **Filter by source** — All / Hacker News / DEV tabs
 - **Sort** — Latest or Top (by score)
 - **Search** — full-text across titles and tags, client-side and instant
 - **Bookmarks** — save stories for later in `localStorage`; no login
@@ -20,8 +19,7 @@ cost.**
 | Source | Endpoint | Key? | Notes |
 |--------|----------|------|-------|
 | Hacker News | [Algolia Search API](https://hn.algolia.com/api) `front_page` | No | Score + comment counts |
-| DEV | [Forem API](https://developers.forem.com/api) `articles?top=2` | No | Score + comments + tags |
-| Reddit | OAuth JSON `r/technology+programming+webdev/hot` | Optional | Free "script" app; works from cloud hosts + gives score/comments. Falls back to public RSS (no counts) when unset |
+| DEV | [Forem API](https://developers.forem.com/api) `articles?top=2` | No | Score + comments + tags + excerpt |
 
 All free, all public. Adding a paid or key-gated source is a deliberate choice — not a default.
 
@@ -38,17 +36,6 @@ All free, all public. Adding a paid or key-gated source is a deliberate choice �
 npm install
 npm run dev      # dev server at http://localhost:3000
 ```
-
-### Reddit on cloud hosts (optional)
-
-Reddit blocks unauthenticated requests from datacenter IPs (e.g. Vercel), so on
-a deployed host the Reddit source needs a free OAuth app. Locally it works
-without one (via RSS). To enable it everywhere:
-
-1. Create a **script** app at [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps).
-2. Copy `.env.example` to `.env.local` and fill in `REDDIT_CLIENT_ID` and
-   `REDDIT_CLIENT_SECRET`.
-3. On Vercel, add the same two variables under **Settings → Environment Variables**.
 
 Other scripts:
 

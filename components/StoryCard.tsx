@@ -7,7 +7,6 @@ import { hostname, timeAgo } from "@/lib/format";
 const SOURCE_STYLES: Record<Story["source"], string> = {
   hackernews: "bg-orange-500/15 text-orange-400",
   devto: "bg-violet-500/15 text-violet-400",
-  reddit: "bg-red-500/15 text-red-400",
 };
 
 export default function StoryCard({
