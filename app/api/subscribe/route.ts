@@ -44,8 +44,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, already: true });
   }
 
+  // Log the upstream failure so it shows in Vercel function logs; return the
+  // upstream status (no secrets) to make misconfigured keys diagnosable.
+  console.error(`Buttondown ${res.status}: ${detail.slice(0, 300)}`);
   return NextResponse.json(
-    { error: "Couldn't sign you up. Try again later." },
+    {
+      error: "Couldn't sign you up. Try again later.",
+      upstreamStatus: res.status,
+    },
     { status: 502 }
   );
 }
