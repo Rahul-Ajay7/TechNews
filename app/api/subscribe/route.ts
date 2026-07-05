@@ -51,6 +51,8 @@ export async function POST(request: Request) {
     {
       error: "Couldn't sign you up. Try again later.",
       upstreamStatus: res.status,
+      // TODO: remove after debugging signup failures.
+      upstreamDetail: detail.slice(0, 300),
     },
     { status: 502 }
   );
