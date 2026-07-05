@@ -59,9 +59,17 @@ export default function RootLayout({
             <a href="/" className="text-lg font-bold tracking-tight">
               Comet<span className="text-cyan-400">ry</span>
             </a>
-            <span className="text-xs text-zinc-500">
-              HN · DEV · Lobsters · GitHub, refreshed every 5 min
-            </span>
+            <nav className="flex items-center gap-4 text-sm">
+              <a href="/" className="text-zinc-400 hover:text-zinc-100">
+                Feed
+              </a>
+              <a
+                href="/digest"
+                className="rounded-full bg-cyan-500/15 px-3 py-1 font-medium text-cyan-400 hover:bg-cyan-500/25"
+              >
+                Daily Digest
+              </a>
+            </nav>
           </div>
         </header>
         {children}
