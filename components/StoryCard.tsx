@@ -58,8 +58,6 @@ export default function StoryCard({
           </div>
           <a
             href={story.url}
-            target="_blank"
-            rel="noopener noreferrer"
             className="text-[15px] font-semibold leading-snug text-zinc-100 hover:text-cyan-400"
           >
             {story.title}
@@ -133,8 +131,6 @@ export default function StoryCard({
         )}
         <a
           href={story.commentsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
           className="hover:text-zinc-300"
         >
           {story.comments > 0

@@ -65,8 +65,6 @@ export default async function DigestPage() {
                   </div>
                   <a
                     href={story.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
                     className="font-semibold leading-snug text-zinc-100 hover:text-cyan-400"
                   >
                     {story.title}
