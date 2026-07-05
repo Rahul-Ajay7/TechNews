@@ -60,13 +60,13 @@ export default function RootLayout({
               Comet<span className="text-cyan-400">ry</span>
             </a>
             <span className="text-xs text-zinc-500">
-              Hacker News + DEV, refreshed every 5 min
+              HN · DEV · Lobsters · GitHub, refreshed every 5 min
             </span>
           </div>
         </header>
         {children}
         <footer className="border-t border-zinc-800/80 py-4 text-center text-xs text-zinc-600">
-          Stories from public Hacker News and DEV APIs
+          Stories from public Hacker News, DEV, Lobsters, and GitHub APIs
         </footer>
         <Analytics />
       </body>

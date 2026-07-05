@@ -12,8 +12,12 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "all", label: "All" },
   { id: "hackernews", label: "Hacker News" },
   { id: "devto", label: "DEV" },
+  { id: "lobsters", label: "Lobsters" },
+  { id: "github", label: "GitHub" },
   { id: "saved", label: "Saved" },
 ];
+
+const SOURCE_TABS: Source[] = ["hackernews", "devto", "lobsters", "github"];
 
 export default function Feed({ initialStories }: { initialStories: Story[] }) {
   const [stories, setStories] = useState(initialStories);
@@ -41,7 +45,7 @@ export default function Feed({ initialStories }: { initialStories: Story[] }) {
 
   const visible = useMemo(() => {
     let list = tab === "saved" ? bookmarks : stories;
-    if (tab === "hackernews" || tab === "devto") {
+    if (tab !== "all" && tab !== "saved" && SOURCE_TABS.includes(tab)) {
       list = list.filter((s) => s.source === tab);
     }
     const q = query.trim().toLowerCase();
