@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { buildDigest, topStories, type Digest } from "@/lib/digest";
 import { SOURCE_LABELS } from "@/lib/types";
 import { hostname } from "@/lib/format";
+import SubscribeForm from "@/components/SubscribeForm";
 
 export const revalidate = 3600;
 
@@ -81,6 +82,10 @@ export default async function DigestPage() {
           )
         )}
       </ol>
+
+      <div className="mt-6">
+        <SubscribeForm />
+      </div>
 
       {digest && (
         <p className="mt-6 text-center text-xs text-zinc-600">
