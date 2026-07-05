@@ -33,24 +33,43 @@ export async function POST(request: Request) {
     ?.split(",")[0]
     ?.trim();
 
-  const res = await fetch("https://api.buttondown.email/v1/subscribers", {
+  const payload = JSON.stringify({
+    email_address: email,
+    ...(visitorIp ? { ip_address: visitorIp } : {}),
+  });
+
+  let res = await fetch("https://api.buttondown.email/v1/subscribers", {
     method: "POST",
     headers: {
       Authorization: `Token ${key}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      email_address: email,
-      ...(visitorIp ? { ip_address: visitorIp } : {}),
-    }),
+    body: payload,
   });
+
+  let detail = res.ok ? "" : await res.text();
+
+  // Buttondown's firewall can still flag requests relayed from a server. Retry
+  // once with the documented bypass header (rate-limited to 5/hour by
+  // Buttondown, acceptable at current volume).
+  if (!res.ok && /subscriber_blocked/.test(detail)) {
+    res = await fetch("https://api.buttondown.email/v1/subscribers", {
+      method: "POST",
+      headers: {
+        Authorization: `Token ${key}`,
+        "Content-Type": "application/json",
+        "X-Buttondown-Bypass-Firewall": "true",
+      },
+      body: payload,
+    });
+    detail = res.ok ? "" : await res.text();
+  }
 
   if (res.ok) {
     return NextResponse.json({ ok: true });
   }
 
   // Buttondown returns 400 with a message when the address already exists.
-  const detail = await res.text();
   if (res.status === 400 && /already/i.test(detail)) {
     return NextResponse.json({ ok: true, already: true });
   }
