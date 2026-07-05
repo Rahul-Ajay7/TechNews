@@ -25,13 +25,24 @@ export async function POST(request: Request) {
     );
   }
 
+  // Buttondown's firewall judges the caller's IP — from a datacenter (Vercel)
+  // it flags requests as bots. Forward the real visitor's IP so it validates
+  // the human instead. https://docs.buttondown.com/firewall
+  const visitorIp = request.headers
+    .get("x-forwarded-for")
+    ?.split(",")[0]
+    ?.trim();
+
   const res = await fetch("https://api.buttondown.email/v1/subscribers", {
     method: "POST",
     headers: {
       Authorization: `Token ${key}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ email_address: email }),
+    body: JSON.stringify({
+      email_address: email,
+      ...(visitorIp ? { ip_address: visitorIp } : {}),
+    }),
   });
 
   if (res.ok) {
