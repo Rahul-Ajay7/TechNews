@@ -120,11 +120,12 @@ export async function buildDigest(): Promise<Digest | null> {
 
 ${list}
 
-Write a punchy daily digest. Return ONLY JSON matching:
+Write a sharp daily digest. Return ONLY JSON matching:
 {"intro": string, "items": [{"i": number, "blurb": string}]}
 
-- "intro": one energetic sentence (max 20 words) summarizing the day's theme in tech.
-- "items": one object per story index above, "blurb" = a 12-18 word "why it matters" note. Be concrete and skimmable. No hype words, no emojis.`;
+- "intro": one specific sentence (max 20 words) naming the actual theme connecting today's stories. Not generic ("innovations abound") — say what's actually happening.
+- "items": one object per story index above. Each "blurb" (12-18 words) must add information the title does NOT already state: the stakes, the "so what", who's affected, or why a developer should care. NEVER restate or paraphrase the title. If the title says "X launches Y", the blurb explains what Y changes or competes with — not that X launched Y.
+- Titles are often terse or cryptic; infer the likely substance from the source and topic. No hype words, no emojis, no "this" as the first word.`;
 
   const text = await callLLM(prompt);
   if (!text) return null;
