@@ -78,12 +78,7 @@ export async function POST(request: Request) {
   // upstream status (no secrets) to make misconfigured keys diagnosable.
   console.error(`Buttondown ${res.status}: ${detail.slice(0, 300)}`);
   return NextResponse.json(
-    {
-      error: "Couldn't sign you up. Try again later.",
-      upstreamStatus: res.status,
-      // TODO: remove after debugging signup failures.
-      upstreamDetail: detail.slice(0, 300),
-    },
+    { error: "Couldn't sign you up. Try again later." },
     { status: 502 }
   );
 }
