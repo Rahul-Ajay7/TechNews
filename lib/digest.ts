@@ -137,11 +137,45 @@ Write a sharp daily digest. Return ONLY JSON matching:
     .filter((item) => top[item.i])
     .map((item) => ({ story: top[item.i], blurb: item.blurb }));
 
+  // Second pass: models write a lazy generic intro when asked up front. Feed
+  // the finished blurbs back and ask for the intro last, so it names a concrete
+  // thread instead of "developers leverage new tools". Fall back on failure.
+  let intro = parsed.intro;
+  try {
+    const sharper = await writeIntro(items);
+    if (sharper) intro = sharper;
+  } catch {
+    // keep the first-pass intro
+  }
+
   return {
-    intro: parsed.intro,
+    intro,
     items,
     generatedAt: new Date().toISOString(),
   };
+}
+
+async function writeIntro(items: DigestItem[]): Promise<string | null> {
+  const notes = items
+    .map((it) => `- ${it.story.title} — ${it.blurb}`)
+    .join("\n");
+
+  const prompt = `Here are today's top developer stories with editor notes:
+
+${notes}
+
+Write the digest's opening line. Return ONLY JSON: {"intro": string}
+
+Rules for "intro":
+- Max 16 words.
+- Name the single biggest story or the concrete thread linking several of them.
+- BANNED as too generic: "innovations", "developers leverage", "new tools and technologies", "abound", "the tech world". If your sentence could describe any random day, rewrite it.
+- Sound like a sharp human editor, not a press release. No emojis.`;
+
+  const text = await callLLM(prompt);
+  if (!text) return null;
+  const parsed: { intro?: string } = JSON.parse(text);
+  return parsed.intro?.trim() || null;
 }
 
 // Fallback used when there's no API key or Gemini fails: just the top stories.
