@@ -21,8 +21,9 @@ const GROQ_MODEL = "llama-3.3-70b-versatile";
 // returns the raw JSON text. Returns null when neither key is set so the digest
 // degrades to a plain ranked list. Response is cached 1h to stay in free tiers.
 async function callLLM(prompt: string): Promise<string | null> {
-  const groqKey = process.env.GROQ_API_KEY;
-  const geminiKey = process.env.GEMINI_API_KEY;
+  // Accept either name — some setups save it without the _KEY suffix.
+  const groqKey = process.env.GROQ_API_KEY || process.env.GROQ_API;
+  const geminiKey = process.env.GEMINI_API_KEY || process.env.GEMINI_API;
 
   if (groqKey) {
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
